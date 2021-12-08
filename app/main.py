@@ -188,7 +188,7 @@ def read_root():
     connection = None
 
     try:
-        connection = mysql.connector.connect(host='quotas-mysql-0',
+        connection = mysql.connector.connect(host='quotas-mysql-0.quotas-headless',
                                          database='Default',
                                          user='root'
                                          )
