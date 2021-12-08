@@ -12,12 +12,21 @@ class UpdateMemory(BaseModel):
 class UpdateVcpu(BaseModel):
     vcpuValue: int
 
-# Database information
-ownHost = 'localhost'
-ownDatabase = 'mydatabase'
+# Database information for local use:
+#ownHostForWrite = 'localhost'
+#ownHostForRead = 'localhost'
+#ownDatabase = 'mydatabase'
+#ownUser = 'root'
+#ownPassword = '1234'
+#tableUse = 'quotastabel'
+
+# Database information for google cloud use:
+ownHostForWrite = 'quotas-mysql-0'
+ownHostForRead = 'quotas-mysql-read'
+ownDatabase = 'Default'
 ownUser = 'root'
-ownPassword = '1234'
-tableUse = 'quotastabel'
+ownPassword = ''
+tableUse = 'quotasDatabase'
 
 
 # This function takes a userID and returns the memory and Vcpu limits for ths user
@@ -62,7 +71,7 @@ def CreatQuota(user_id, vcpu, memory):
 
 def writeToDB(user_id: str, operation: str, item):
     try:
-        connection = mysql.connector.connect(host= ownHost,
+        connection = mysql.connector.connect(host= ownHostForWrite,
                                          database= ownDatabase,
                                          user= ownUser,
                                          password= ownPassword)
@@ -130,7 +139,7 @@ def writeToDB(user_id: str, operation: str, item):
 
 def readFromDB(user_id):
     try:
-        connection = mysql.connector.connect(host= ownHost,
+        connection = mysql.connector.connect(host= ownHostForRead,
                                          database= ownDatabase,
                                          user= ownUser,
                                          password= ownPassword)
