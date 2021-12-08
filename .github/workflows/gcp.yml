@@ -32,5 +32,5 @@ jobs:
       run: |-
         docker tag $IMAGE_NAME:latest europe-west1-docker.pkg.dev/$PROJECT_ID/quotaservice/$IMAGE_NAME:latest
         docker tag $IMAGE_NAME:latest europe-west1-docker.pkg.dev/$PROJECT_ID/quotaservice/$IMAGE_NAME:$GIT_TAG
-        docker push europe-west1-docker.pkg.dev/$PROJECT_ID/images/$IMAGE_NAME:latest
-        docker push europe-west1-docker.pkg.dev/$PROJECT_ID/images/$IMAGE_NAME:$GIT_TAG
+        docker push europe-west1-docker.pkg.dev/$PROJECT_ID/quotaservice/$IMAGE_NAME:latest
+        docker push europe-west1-docker.pkg.dev/$PROJECT_ID/quotaservice/$IMAGE_NAME:$GIT_TAG
