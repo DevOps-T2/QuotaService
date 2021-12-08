@@ -105,12 +105,12 @@ def writeToDB(user_id: str, operation: str, item):
         
             elif operation == "upVcpu":
                 # Check to see if the userID exits in the database
-                sqlquery = "SELECT COUNT(*) FROM " + tableUse + " WHERE User_id =" + "\"" +  user_id + "\""
+                sqlquery = "SELECT COUNT(*) FROM " + tableUse + " WHERE user_id =" + "\"" +  user_id + "\""
                 mycursor.execute(sqlquery)
                 resultFromquery = mycursor.fetchall()[0][0]
 
                 if resultFromquery == 1:
-                    mysqlquery = "UPDATE " + tableUse + " SET Vcpu = " + "\'" + str(item) + "\' " +  "WHERE User_id = " + "\"" +  user_id + "\""
+                    mysqlquery = "UPDATE " + tableUse + " SET vcpu = " + "\'" + str(item) + "\' " +  "WHERE user_id = " + "\"" +  user_id + "\""
                     mycursor.execute(mysqlquery)
 
                     connection.commit()
@@ -147,12 +147,12 @@ def readFromDB(user_id):
         if connection.is_connected():
             mycursor = connection.cursor()
             # Check to see if the userID exits in the database
-            sqlquery = "SELECT COUNT(*) FROM " + tableUse + " WHERE User_id =" + "\"" +  user_id + "\""
+            sqlquery = "SELECT COUNT(*) FROM " + tableUse + " WHERE user_id =" + "\"" +  user_id + "\""
             mycursor.execute(sqlquery)
             resultFromquery = mycursor.fetchall()[0][0]
 
             if resultFromquery == 1:
-                mysqlquery = "SELECT Vcpu, Memory From " + tableUse + " WHERE User_id = " + "\"" +  user_id + "\""
+                mysqlquery = "SELECT vcpu, memory From " + tableUse + " WHERE user_id = " + "\"" +  user_id + "\""
                 mycursor.execute(mysqlquery)
 
                 resultFromquery = mycursor.fetchall()
@@ -185,7 +185,6 @@ def readFromDB(user_id):
 @app.get("/")
 def read_root():
 
-    test = ''    
     try:
         connection = mysql.connector.connect(host=ownHostForWrite,
                                          database=ownDatabase,
