@@ -1,0 +1,5 @@
+typing
+fastapi
+pydantic
+mysql.connector
+uvicorn[standard]
