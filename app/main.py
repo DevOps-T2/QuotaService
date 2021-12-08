@@ -21,7 +21,7 @@ class UpdateVcpu(BaseModel):
 #tableUse = 'quotastabel'
 
 # Database information for google cloud use:
-ownHostForWrite = 'quotas-mysql-0'
+ownHostForWrite = 'quotas-mysql-0.quotas-headless'
 ownHostForRead = 'quotas-mysql-read'
 ownDatabase = 'Default'
 ownUser = 'root'
@@ -152,7 +152,7 @@ def readFromDB(user_id):
             resultFromquery = mycursor.fetchall()[0][0]
 
             if resultFromquery == 1:
-                mysqlquery = "SELECT vcpu, memory From " + tableUse + " WHERE user_id = " + "\"" +  user_id + "\""
+                mysqlquery = "SELECT vcpus, memory From " + tableUse + " WHERE user_id = " + "\"" +  user_id + "\""
                 mycursor.execute(mysqlquery)
 
                 resultFromquery = mycursor.fetchall()
