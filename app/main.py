@@ -110,7 +110,7 @@ def writeToDB(user_id: str, operation: str, item):
                 resultFromquery = mycursor.fetchall()[0][0]
 
                 if resultFromquery == 1:
-                    mysqlquery = "UPDATE " + tableUse + " SET vcpu = " + "\'" + str(item) + "\' " +  "WHERE user_id = " + "\"" +  user_id + "\""
+                    mysqlquery = "UPDATE " + tableUse + " SET vcpus = " + "\'" + str(item) + "\' " +  "WHERE user_id = " + "\"" +  user_id + "\""
                     mycursor.execute(mysqlquery)
 
                     connection.commit()
