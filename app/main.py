@@ -185,10 +185,12 @@ def readFromDB(user_id):
 @app.get("/")
 def read_root():
 
+    connection = None
+
     try:
-        connection = mysql.connector.connect(host=ownHostForWrite,
-                                         database=ownDatabase,
-                                         user=ownUser
+        connection = mysql.connector.connect(host='quotas-mysql-0',
+                                         database='Default',
+                                         user='root'
                                          )
         if connection.is_connected():
             return "succes!!!"
