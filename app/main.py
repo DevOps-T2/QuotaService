@@ -12,6 +12,13 @@ class UpdateMemory(BaseModel):
 class UpdateVcpu(BaseModel):
     vcpuValue: int
 
+# Database information
+ownHost = 'localhost'
+ownDatabase = 'mydatabase'
+ownUser = 'root'
+ownPassword = '1234'
+tableUse = 'quotastabel'
+
 
 # This function takes a userID and returns the memory and Vcpu limits for ths user
 @app.get("/quota/{user_id}")
@@ -21,7 +28,7 @@ async def GetQuotaRequest(user_id: str):
 
     memory, vCpu = readFromDB(user_id)
 
-    if memory or vCpu == -1:
+    if memory and vCpu == -1:
         raise HTTPException(status_code=404, detail="User not found")
 
     return memory, vCpu
@@ -55,21 +62,21 @@ def CreatQuota(user_id, vcpu, memory):
 
 def writeToDB(user_id: str, operation: str, item):
     try:
-        connection = mysql.connector.connect(host='quotas-mysql-0',
-                                         database='Default',
-                                         user='root'
-                                         )
+        connection = mysql.connector.connect(host= ownHost,
+                                         database= ownDatabase,
+                                         user= ownUser,
+                                         password= ownPassword)
       
         if connection.is_connected():
             mycursor = connection.cursor()
             if operation == "upMemory":
                 # Check to see if the userID exits in the database
-                sqlquery = "SELECT COUNT(*) FROM quotastabel WHERE User_id =" + "\"" +  user_id + "\""
+                sqlquery = "SELECT COUNT(*) FROM " + tableUse + " WHERE User_id =" + "\"" +  user_id + "\""
                 mycursor.execute(sqlquery)
                 resultFromquery = mycursor.fetchall()[0][0]
 
                 if resultFromquery == 1:
-                    mysqlquery = "UPDATE quotastabel SET Memory = " + "\'" + str(item) + "\' " +  "WHERE User_id = " + "\"" +  user_id + "\""
+                    mysqlquery = "UPDATE " + tableUse + " SET Memory = " + "\'" + str(item) + "\' " +  "WHERE User_id = " + "\"" +  user_id + "\""
                     mycursor.execute(mysqlquery)
 
                     connection.commit()
@@ -89,12 +96,12 @@ def writeToDB(user_id: str, operation: str, item):
         
             elif operation == "upVcpu":
                 # Check to see if the userID exits in the database
-                sqlquery = "SELECT COUNT(*) FROM quotastabel WHERE User_id =" + "\"" +  user_id + "\""
+                sqlquery = "SELECT COUNT(*) FROM " + tableUse + " WHERE User_id =" + "\"" +  user_id + "\""
                 mycursor.execute(sqlquery)
                 resultFromquery = mycursor.fetchall()[0][0]
 
                 if resultFromquery == 1:
-                    mysqlquery = "UPDATE quotastabel SET Vcpu = " + "\'" + str(item) + "\' " +  "WHERE User_id = " + "\"" +  user_id + "\""
+                    mysqlquery = "UPDATE " + tableUse + " SET Vcpu = " + "\'" + str(item) + "\' " +  "WHERE User_id = " + "\"" +  user_id + "\""
                     mycursor.execute(mysqlquery)
 
                     connection.commit()
@@ -123,20 +130,20 @@ def writeToDB(user_id: str, operation: str, item):
 
 def readFromDB(user_id):
     try:
-        connection = mysql.connector.connect(host='quotas-mysql-0',
-                                         database='Default',
-                                         user='root'
-                                         )
+        connection = mysql.connector.connect(host= ownHost,
+                                         database= ownDatabase,
+                                         user= ownUser,
+                                         password= ownPassword)
       
         if connection.is_connected():
             mycursor = connection.cursor()
             # Check to see if the userID exits in the database
-            sqlquery = "SELECT COUNT(*) FROM quotastabel WHERE User_id =" + "\"" +  user_id + "\""
+            sqlquery = "SELECT COUNT(*) FROM " + tableUse + " WHERE User_id =" + "\"" +  user_id + "\""
             mycursor.execute(sqlquery)
             resultFromquery = mycursor.fetchall()[0][0]
 
             if resultFromquery == 1:
-                mysqlquery = "SELECT Vcpu, Memory From quotastabel WHERE User_id = " + "\"" +  user_id + "\""
+                mysqlquery = "SELECT Vcpu, Memory From " + tableUse + " WHERE User_id = " + "\"" +  user_id + "\""
                 mycursor.execute(mysqlquery)
 
                 resultFromquery = mycursor.fetchall()
