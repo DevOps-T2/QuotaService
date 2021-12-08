@@ -25,7 +25,7 @@ ownHostForWrite = 'quotas-mysql-0'
 ownHostForRead = 'quotas-mysql-read'
 ownDatabase = 'Default'
 ownUser = 'root'
-ownPassword = ''
+#ownPassword = ''
 tableUse = 'quotasDatabase'
 
 
@@ -73,8 +73,8 @@ def writeToDB(user_id: str, operation: str, item):
     try:
         connection = mysql.connector.connect(host= ownHostForWrite,
                                          database= ownDatabase,
-                                         user= ownUser,
-                                         password= ownPassword)
+                                         user= ownUser
+                                         )
       
         if connection.is_connected():
             mycursor = connection.cursor()
@@ -141,8 +141,8 @@ def readFromDB(user_id):
     try:
         connection = mysql.connector.connect(host= ownHostForRead,
                                          database= ownDatabase,
-                                         user= ownUser,
-                                         password= ownPassword)
+                                         user= ownUser
+                                         )
       
         if connection.is_connected():
             mycursor = connection.cursor()
@@ -192,20 +192,13 @@ def read_root():
                                          user=ownUser
                                          )
         if connection.is_connected():
-            db_Info = connection.get_server_info()
-            print("Connected to MySQL Server version ", db_Info)
-            cursor = connection.cursor()
-            cursor.execute("select database();")
-            record = cursor.fetchone()
-            print("You're connected to database: ", record)
-            
             return "succes!!!"
 
     except Error as e:
         print("Error while connecting to MySQL", e)
+        return str(e)
     finally:
         if connection.is_connected():
-           cursor.close()
            connection.close()
            print("MySQL connection is closed")
 
