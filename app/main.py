@@ -25,7 +25,7 @@ ownHostForWrite = 'quotas-mysql-0.quotas-headless'
 ownHostForRead = 'quotas-mysql-read'
 ownDatabase = 'Default'
 ownUser = 'root'
-#ownPassword = ''
+ownPassword = ''
 tableUse = 'quotasDatabase'
 
 
@@ -182,7 +182,7 @@ def readFromDB(user_id):
             print("MySQL connection is closed")
 
 
-@app.get("/quota/viewDatabase")
+@app.get("/viewDatabase")
 async def ViewDatabase():
 
     return readwholeDatabase()
