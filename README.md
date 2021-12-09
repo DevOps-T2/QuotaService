@@ -6,10 +6,10 @@ Update: add new endpoint to view database.
 
 Respons structur:
 
-First: id
-Second: user_id
-third: memory
-fourth: vcpus
+  First: id
+  Second: user_id
+  Third: memory
+  Fourth: vcpus
 
 NOTE: The error messages form the service is NOT corrected, and the database is not tested against different injections.
 
