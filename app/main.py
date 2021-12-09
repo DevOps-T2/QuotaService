@@ -1,17 +1,25 @@
 from typing import AsyncIterable
+from typing import List
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import mysql.connector
 from mysql.connector import Error
-import json
+# import json
+
 
 app = FastAPI()
 
+class GetMemoryAndVcpu(BaseModel):
+    id: int
+    user_id: int
+    memoryLimit: int
+    vcpuLimit: int
+
 class UpdateMemory(BaseModel):
-    memoryValue: int
+    memoryLimit: int
 
 class UpdateVcpu(BaseModel):
-    vcpuValue: int
+    vcpuLimit: int
 
 # Database information for local use:
 #ownHostForWrite = 'localhost'
@@ -49,7 +57,7 @@ async def GetQuotaRequest(user_id: str):
 async def UpdateMemoryQuotaRequest(user_id: str, updateMemory: UpdateMemory):
 
     # Does a mysql database return a status code, when a write is succes???
-    statusCode = writeToDB(user_id, "upMemory", updateMemory.memoryValue)
+    statusCode = writeToDB(user_id, "upMemory", updateMemory.memoryLimit)
 
     if statusCode == 404:
         raise HTTPException(status_code=404, detail="User not found, Memory limit NOT updated")
@@ -60,7 +68,7 @@ async def UpdateMemoryQuotaRequest(user_id: str, updateMemory: UpdateMemory):
 @app.put("/quota/Vcpu/{user_id}")
 async def UpdateVCpuQuotaRequest(user_id: str, vcpu: UpdateVcpu):
     
-    statusCode = writeToDB(user_id, "upVcpu", vcpu.vcpuValue )
+    statusCode = writeToDB(user_id, "upVcpu", vcpu.vcpuLimit )
     
     if statusCode == 404:
         raise HTTPException(status_code=404, detail="User not found, Vcpu limit NOT updated")
@@ -185,10 +193,21 @@ def readFromDB(user_id):
             print("MySQL connection is closed")
 
 
-@app.get("/viewDatabase")
+@app.get("/viewDatabase", response_model = List[GetMemoryAndVcpu])
 async def ViewDatabase():
 
-    return readwholeDatabase()
+    query_result = readwholeDatabase()
+
+    print(query_result)
+
+    resultList: List[GetMemoryAndVcpu] = []
+    for result in query_result:
+        resultList.append(
+            GetMemoryAndVcpu(id = result[0],
+                             user_id = result[1],
+                             memoryLimit = result[2],
+                             vcpuLimit = result[3]))
+    return resultList
 
 def readwholeDatabase():
     try:
@@ -203,12 +222,10 @@ def readwholeDatabase():
             mysqlquery = "SELECT * FROM " + tableUse
             mycursor.execute(mysqlquery)
 
-            row_headers=[x[0] for x in mycursor.description]
-            rv = mycursor.fetchall()
-            json_data=[]
-            for result in rv:
-                json_data.append(dict(zip(row_headers,result)))
-            return json.dumps(json_data)    
+            result = mycursor.fetchall()
+
+            return result
+
               
     except Error as e:
         print("Error while connecting to MySQL", e)
