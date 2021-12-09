@@ -3,6 +3,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import mysql.connector
 from mysql.connector import Error
+import json
 
 app = FastAPI()
 
@@ -15,17 +16,17 @@ class UpdateVcpu(BaseModel):
 # Database information for local use:
 #ownHostForWrite = 'localhost'
 #ownHostForRead = 'localhost'
-#ownDatabase = 'mydatabase'
+#ownDatabase = 'default'
 #ownUser = 'root'
 #ownPassword = '1234'
-#tableUse = 'quotastabel'
+#tableUse = 'quotas'
 
 # Database information for google cloud use:
 ownHostForWrite = 'quotas-mysql-0.quotas-headless'
 ownHostForRead = 'quotas-mysql-read'
 ownDatabase = 'Default'
 ownUser = 'root'
-ownPassword = ''
+#ownPassword = ''
 tableUse = 'quotasDatabase'
 
 
@@ -36,11 +37,12 @@ async def GetQuotaRequest(user_id: str):
     vCpu: int
 
     memory, vCpu = readFromDB(user_id)
+   #return readFromDB(user_id)
 
     if memory and vCpu == -1:
         raise HTTPException(status_code=404, detail="User not found")
 
-    return memory, vCpu
+    return {"memory": memory, "vCpu" : vCpu}
     
 # Updates the memory limit for a specific user
 @app.put("/quota/memory/{user_id}")
@@ -138,6 +140,7 @@ def writeToDB(user_id: str, operation: str, item):
             print("MySQL connection is closed")
 
 def readFromDB(user_id):
+
     try:
         connection = mysql.connector.connect(host= ownHostForRead,
                                          database= ownDatabase,
@@ -152,8 +155,7 @@ def readFromDB(user_id):
             resultFromquery = mycursor.fetchall()[0][0]
 
             if resultFromquery == 1:
-                mysqlquery = "SELECT JSON_ARRAYAGG(JSON_OBJECT( 'vcpus', vcpus, 'memory' memory)) FROM " + tableUse + " WHERE user_id = " + "\"" +  user_id + "\""
-             #   mysqlquery = "SELECT vcpus, memory From " + tableUse + " WHERE user_id = " + "\"" +  user_id + "\""
+                mysqlquery = "SELECT vcpus, memory From " + tableUse + " WHERE user_id = " + "\"" +  user_id + "\""
                 mycursor.execute(mysqlquery)
 
                 resultFromquery = mycursor.fetchall()
@@ -201,9 +203,12 @@ def readwholeDatabase():
             mysqlquery = "SELECT * FROM " + tableUse
             mycursor.execute(mysqlquery)
 
-            resultFromquery = mycursor.fetchall()
-
-            return resultFromquery       
+            row_headers=[x[0] for x in mycursor.description]
+            rv = mycursor.fetchall()
+            json_data=[]
+            for result in rv:
+                json_data.append(dict(zip(row_headers,result)))
+            return json.dumps(json_data)    
               
     except Error as e:
         print("Error while connecting to MySQL", e)
@@ -220,12 +225,12 @@ def read_root():
     connection = None
 
     try:
-        connection = mysql.connector.connect(host='quotas-mysql-0.quotas-headless',
-                                         database='Default',
-                                         user='root'
+        connection = mysql.connector.connect(host=ownHostForWrite,
+                                         database=ownDatabase,
+                                         user=ownUser
                                          )
         if connection.is_connected():
-            return "succes!!!"
+            return "Succes connect to database!!!"
 
     except Error as e:
         print("Error while connecting to MySQL", e)
@@ -235,4 +240,4 @@ def read_root():
            connection.close()
            print("MySQL connection is closed")
 
-    return "failll"
+    return "Fail connecting to database"
