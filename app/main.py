@@ -182,7 +182,7 @@ def readFromDB(user_id):
             print("MySQL connection is closed")
 
 
-@app.get("/quota/ViewDatabase")
+@app.get("/quota/viewDatabase")
 async def ViewDatabase():
 
     return readwholeDatabase()
@@ -197,13 +197,12 @@ def readwholeDatabase():
         if connection.is_connected():
             mycursor = connection.cursor()
 
-            mysqlquery = "SELECT * from quotasDatabase"
+            mysqlquery = "SELECT * FROM " + tableUse
             mycursor.execute(mysqlquery)
 
             resultFromquery = mycursor.fetchall()
 
-            return resultFromquery
-            
+            return resultFromquery       
               
     except Error as e:
         print("Error while connecting to MySQL", e)
