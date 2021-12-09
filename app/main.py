@@ -152,7 +152,8 @@ def readFromDB(user_id):
             resultFromquery = mycursor.fetchall()[0][0]
 
             if resultFromquery == 1:
-                mysqlquery = "SELECT vcpus, memory From " + tableUse + " WHERE user_id = " + "\"" +  user_id + "\""
+                mysqlquery = "SELECT JSON_ARRAYAGG(JSON_OBJECT( 'vcpus', vcpus, 'memory' memory)) FROM " + tableUse + " WHERE user_id = " + "\"" +  user_id + "\""
+             #   mysqlquery = "SELECT vcpus, memory From " + tableUse + " WHERE user_id = " + "\"" +  user_id + "\""
                 mycursor.execute(mysqlquery)
 
                 resultFromquery = mycursor.fetchall()
