@@ -21,6 +21,8 @@ class UpdateMemory(BaseModel):
 class UpdateVcpu(BaseModel):
     vcpuLimit: int
 
+
+
 # Database information for local use:
 #ownHostForWrite = 'localhost'
 #ownHostForRead = 'localhost'
@@ -40,12 +42,15 @@ tableUse = 'quotasDatabase'
 
 # This function takes a userID and returns the memory and Vcpu limits for ths user
 @app.get("/quota/{user_id}")
-async def GetQuotaRequest(user_id: str):
+async def Get_Quota_Request(user_id: str):
+    """
+        Takes a user id and returns a JSON object with the limit for the user
+
+    """    
     memory: int
     vCpu: int
 
     memory, vCpu = readFromDB(user_id)
-   #return readFromDB(user_id)
 
     if memory and vCpu == -1:
         raise HTTPException(status_code=404, detail="User not found")
@@ -54,7 +59,12 @@ async def GetQuotaRequest(user_id: str):
     
 # Updates the memory limit for a specific user
 @app.put("/quota/memory/{user_id}")
-async def UpdateMemoryQuotaRequest(user_id: str, updateMemory: UpdateMemory):
+async def Update_Memory_Quota_Request(user_id: str, updateMemory: UpdateMemory):
+
+    """
+        Takes a user id and updates the limit memory for specific user in the Quota Mysql database
+        Returns a string saying "User memory was updated" if succed 
+    """
 
     # Does a mysql database return a status code, when a write is succes???
     statusCode = writeToDB(user_id, "upMemory", updateMemory.memoryLimit)
@@ -66,18 +76,24 @@ async def UpdateMemoryQuotaRequest(user_id: str, updateMemory: UpdateMemory):
 
 # Updates the Vcpu limit for a specific user
 @app.put("/quota/Vcpu/{user_id}")
-async def UpdateVCpuQuotaRequest(user_id: str, vcpu: UpdateVcpu):
+async def Update_VCpu_Quota_Request(user_id: str, vcpu: UpdateVcpu):
     
+    """
+        Takes a user id and updates the limit Vcpu for specific user in the Quota Mysql database
+        Returns a string saying "User Vcpu was updated" if succed
+    """
+
     statusCode = writeToDB(user_id, "upVcpu", vcpu.vcpuLimit )
     
     if statusCode == 404:
         raise HTTPException(status_code=404, detail="User not found, Vcpu limit NOT updated")
 
     return "User Vcpu updated"
-    
+
+ # Might deleth:   
 # This function is a event and NOT a endpoint
-def CreatQuota(user_id, vcpu, memory):
-    return
+#def CreatQuota(user_id, vcpu, memory):
+#   return
 
 def writeToDB(user_id: str, operation: str, item):
     try:
@@ -105,8 +121,7 @@ def writeToDB(user_id: str, operation: str, item):
                     statusCode = 200
     
                     return statusCode  
-        
-                    
+
                 else:
                     print("No user found")
                     statusCode = 404
