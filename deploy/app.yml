@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: quotas-app
+  name: quotas
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: quotas-app
+    spec:
+      containers:
+        - name: quotas
+          image: quotas
+          ports:
+            - containerPort: 80
+              name: quotas
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: quotas-app
+  labels:
+    app: quotas
+spec:
+  type: LoadBalancer # Remove later
+  ports:
+    - port: 80
+  selector:
+    app: quotas-app

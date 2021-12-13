@@ -1,0 +1,4 @@
+commonLabels:
+  app: quotas-app
+resources:
+  - deploy/app.yml
