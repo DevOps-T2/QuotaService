@@ -21,7 +21,13 @@ class UpdateMemory(BaseModel):
 class UpdateVcpu(BaseModel):
     vcpuLimit: int
 
+class QuotasRespons(BaseModel):
+    memory: int
+    vCpu: int
 
+class UpdateRespons(BaseModel):
+    message: str
+    status_code: int
 
 # Database information for local use:
 #ownHostForWrite = 'localhost'
@@ -41,8 +47,8 @@ tableUse = 'quotasDatabase'
 
 
 # This function takes a userID and returns the memory and Vcpu limits for ths user
-@app.get("/quota/{user_id}")
-async def Get_Quota_Request(user_id: str):
+@app.get("/quota/{user_id}", response_model=QuotasRespons)
+async def Get_Quota_Request(user_id: str) -> QuotasRespons:
     """
         Takes a user id and returns a JSON object with the limit for the user
 
@@ -55,10 +61,14 @@ async def Get_Quota_Request(user_id: str):
     if memory and vCpu == -1:
         raise HTTPException(status_code=404, detail="User not found")
 
-    return {"memory": memory, "vCpu" : vCpu}
+    result = QuotasRespons
+    result.memory = memory
+    result.vCpu = vCpu
+
+    return result
     
 # Updates the memory limit for a specific user
-@app.put("/quota/memory/{user_id}")
+@app.put("/quota/memory/{user_id}", response_model=UpdateRespons)
 async def Update_Memory_Quota_Request(user_id: str, updateMemory: UpdateMemory):
 
     """
@@ -72,10 +82,14 @@ async def Update_Memory_Quota_Request(user_id: str, updateMemory: UpdateMemory):
     if statusCode == 404:
         raise HTTPException(status_code=404, detail="User not found, Memory limit NOT updated")
     
-    return "User memory was updated" 
+    result = UpdateRespons
+    result.message = "Memory limit for user: " + user_id + " was updated"
+    result.status_code = statusCode
+
+    return  result
 
 # Updates the Vcpu limit for a specific user
-@app.put("/quota/Vcpu/{user_id}")
+@app.put("/quota/Vcpu/{user_id}", response_model=UpdateRespons)
 async def Update_VCpu_Quota_Request(user_id: str, vcpu: UpdateVcpu):
     
     """
@@ -88,7 +102,11 @@ async def Update_VCpu_Quota_Request(user_id: str, vcpu: UpdateVcpu):
     if statusCode == 404:
         raise HTTPException(status_code=404, detail="User not found, Vcpu limit NOT updated")
 
-    return "User Vcpu updated"
+    result = UpdateRespons
+    result.message = "Vcpu limit for user: " + user_id + " was updated"
+    result.status_code = statusCode
+
+    return result
 
  # Might deleth:   
 # This function is a event and NOT a endpoint
@@ -267,9 +285,12 @@ def read_root():
     except Error as e:
         print("Error while connecting to MySQL", e)
         return str(e)
+   
     finally:
+        if connection == None:
+            return "Fail to connect to database"
         if connection.is_connected():
            connection.close()
            print("MySQL connection is closed")
 
-    return "Fail connecting to database"
+    
