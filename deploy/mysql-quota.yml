@@ -3,7 +3,7 @@ data:
   initdb-sql.sql: |-
     CREATE TABLE IF NOT EXISTS Default.quotas (
     id INTEGER NOT NULL AUTO_INCREMENT,
-    user_id VARCHAR NOT NULL,
+    user_id VARCHAR(255) NOT NULL,
     memory INTEGER NOT NULL,
     vcpus INTEGER NOT NULL,
     PRIMARY KEY (id)
