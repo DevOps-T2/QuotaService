@@ -6,8 +6,9 @@ metadata:
   name: quotas
 spec:
   replicas: 1
-  matchLabels:
-    app: quotas-app
+  selector: 
+    matchLabels:
+      app: quotas-app
   template:
     metadata:
       labels:
