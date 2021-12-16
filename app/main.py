@@ -48,7 +48,7 @@ ownHostForRead = 'quotas-mysql-read'
 ownDatabase = 'Default'
 ownUser = 'root'
 #ownPassword = ''
-tableUse = 'quotasDatabase'
+tableUse = 'quotas'
 
 @app.post("/quota/addUserLimit", response_model=UpdateRespons)
 async def Add_User_Limit(request: addUserInfo) -> UpdateRespons:
@@ -321,6 +321,7 @@ def read_root():
                                          user=ownUser
                                          )
         if connection.is_connected():
+            
             return "Succes connect to database!!!"
 
     except Error as e:
