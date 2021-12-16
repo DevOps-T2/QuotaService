@@ -11,7 +11,7 @@ app = FastAPI()
 
 class GetMemoryAndVcpu(BaseModel):
     id: int
-    user_id: int
+    user_id: str
     memoryLimit: int
     vcpuLimit: int
 

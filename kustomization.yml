@@ -2,3 +2,4 @@ commonLabels:
   app: quotas-app
 resources:
   - deploy/app.yml
+  - deploy/mysql-quota.yml
