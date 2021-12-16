@@ -1,5 +1,5 @@
 commonLabels:
-  app: quotas-app
+  app: jefiojejfeio
 resources:
   - deploy/app.yml
   - deploy/mysql-quota.yml
