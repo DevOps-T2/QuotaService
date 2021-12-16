@@ -48,7 +48,7 @@ ownHostForRead = 'quotas-mysql-read'
 ownDatabase = 'Default'
 ownUser = 'root'
 #ownPassword = ''
-tableUse = 'quotas'
+tableUse = 'quotasDatabase'
 
 @app.post("/quota/addUserLimit", response_model=UpdateRespons)
 async def Add_User_Limit(request: addUserInfo) -> UpdateRespons:
@@ -68,7 +68,7 @@ def addUserToDB(user_id: str, memory: int, vCpu: int):
                                          )
         if connection.is_connected():
             mycursor = connection.cursor()
-            sql = "INSERT INTO quotasDatabase (user_id, memory, vcpus) VALUES (%s, %s, %s)"
+            sql = "INSERT INTO " + tableUse + "(user_id, memory, vcpus) VALUES (%s, %s, %s)"
             val = (user_id, str(memory), str(vCpu))
 
             mycursor.execute(sql, val)
