@@ -123,11 +123,7 @@ async def Update_Memory_Quota_Request(user_id: str, updateMemory: UpdateMemory):
     if statusCode == 404:
         raise HTTPException(status_code=404, detail="User not found, Memory limit NOT updated")
     
-    result = UpdateRespons
-    result.message = "Memory limit for user: " + user_id + " was updated"
-    result.status_code = statusCode
-
-    return  result
+    return  UpdateRespons(message = "Memory limit for user: " + user_id + " was updated", status_code = statusCode)
 
 # Updates the Vcpu limit for a specific user
 @app.put("/quota/Vcpu/{user_id}", response_model=UpdateRespons)
@@ -143,11 +139,7 @@ async def Update_VCpu_Quota_Request(user_id: str, vcpu: UpdateVcpu):
     if statusCode == 404:
         raise HTTPException(status_code=404, detail="User not found, Vcpu limit NOT updated")
 
-    result = UpdateRespons
-    result.message = "Vcpu limit for user: " + user_id + " was updated"
-    result.status_code = statusCode
-
-    return result
+    return UpdateRespons(message = "Vcpu limit for user: " + user_id + " was updated", status_code = statusCode)
 
  # Might deleth:   
 # This function is a event and NOT a endpoint
