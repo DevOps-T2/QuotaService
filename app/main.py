@@ -29,13 +29,18 @@ class UpdateRespons(BaseModel):
     message: str
     status_code: int
 
+class addUserInfo(BaseModel):
+    user_id: str
+    memory: int
+    vCpu: int
+
 # Database information for local use:
 #ownHostForWrite = 'localhost'
 #ownHostForRead = 'localhost'
 #ownDatabase = 'default'
 #ownUser = 'root'
 #ownPassword = '1234'
-#tableUse = 'quotas'
+#tableUse = 'quotasdatabase'
 
 # Database information for google cloud use:
 ownHostForWrite = 'quotas-mysql-0.quotas-headless'
@@ -44,6 +49,46 @@ ownDatabase = 'Default'
 ownUser = 'root'
 #ownPassword = ''
 tableUse = 'quotasDatabase'
+
+@app.post("/quota/addUserLimit", response_model=UpdateRespons)
+async def Add_User_Limit(request: addUserInfo) -> UpdateRespons:
+    """
+    Add a user limit for memory and Vcpu
+
+    """
+
+    return addUserToDB(request.user_id, request.memory, request.vCpu)
+
+def addUserToDB(user_id: str, memory: int, vCpu: int):
+
+    try:
+        connection = mysql.connector.connect(host=ownHostForWrite,
+                                         database=ownDatabase,
+                                         user=ownUser
+                                         )
+        if connection.is_connected():
+            mycursor = connection.cursor()
+            sql = "INSERT INTO quotasDatabase (user_id, memory, vcpus) VALUES (%s, %s, %s)"
+            val = (user_id, str(memory), str(vCpu))
+
+            mycursor.execute(sql, val)
+
+            connection.commit()
+
+            if (mycursor.rowcount == 1):
+                return UpdateRespons(message = "User limit information added", status_code = 200)
+
+    except Error as e:
+        print("Error while connecting to MySQL", e)
+        return str(e)
+   
+    finally:
+        if connection == None:
+            return "Fail to connect to database"
+        if connection.is_connected():
+           connection.close()
+           print("MySQL connection is closed")
+
 
 
 # This function takes a userID and returns the memory and Vcpu limits for ths user
@@ -61,11 +106,7 @@ async def Get_Quota_Request(user_id: str) -> QuotasRespons:
     if memory and vCpu == -1:
         raise HTTPException(status_code=404, detail="User not found")
 
-    result = QuotasRespons
-    result.memory = memory
-    result.vCpu = vCpu
-
-    return result
+    return QuotasRespons(memory = memory, vCpu = vCpu)
     
 # Updates the memory limit for a specific user
 @app.put("/quota/memory/{user_id}", response_model=UpdateRespons)

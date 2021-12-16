@@ -6,6 +6,7 @@ data:
     user_id VARCHAR NOT NULL,
     memory INTEGER NOT NULL,
     vcpus INTEGER NOT NULL,
+    UNIQUE (user_id),
     PRIMARY KEY (id)
     );
 kind: ConfigMap
