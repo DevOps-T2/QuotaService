@@ -59,6 +59,54 @@ async def Add_User_Limit(request: addUserInfo) -> UpdateRespons:
 
     return addUserToDB(request.user_id, request.memory, request.vCpu)
 
+@app.delete("/quota/deleteUser/{user_id}", response_model=UpdateRespons)
+async def Delete_user(user_id, str) -> UpdateRespons:
+    
+    return deteleUserFromDB(user_id)
+
+
+def deteleUserFromDB(user_id: str) -> UpdateRespons:
+
+    try:
+        connection = mysql.connector.connect(host=ownHostForWrite,
+                                         database=ownDatabase,
+                                         user=ownUser
+                                         )
+        if connection.is_connected():
+            mycursor = connection.cursor()
+            # Check to see if the userID exits in the database
+            sqlquery = "SELECT COUNT(*) FROM " + tableUse + " WHERE User_id =" + "\"" +  user_id + "\""
+            mycursor.execute(sqlquery)
+            resultFromquery = mycursor.fetchall()[0][0]
+
+        if resultFromquery == 1:
+            sql = "DELETE FROM " + tableUse + " WHERE user_id = " + user_id
+
+            mycursor.execute(sql)
+
+            connection.commit()
+
+            if mycursor.rowcount == 1:
+                return UpdateRespons(message = "User " + user_id + " was delete", status_code=200 )
+            else:
+                return UpdateRespons(message = "Something went wrong, while deleting user " + user_id + " not delete", statusCode = 500)
+
+        else:
+            return UpdateRespons(message = "No user found", statusCode = 404)
+
+
+    except Error as e:
+        print("Error while connecting to MySQL", e)
+        return str(e)
+   
+    finally:
+        if connection == None:
+            return "Fail to connect to database"
+        if connection.is_connected():
+           connection.close()
+           print("MySQL connection is closed")
+
+
 def addUserToDB(user_id: str, memory: int, vCpu: int):
 
     try:
