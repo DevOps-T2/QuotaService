@@ -102,7 +102,7 @@ def deteleUserFromDB(user_id: str) -> UpdateRespons:
                 return UpdateRespons(message = "Something went wrong, while deleting user " + user_id + " not delete", status_code = 500)
 
         else:
-            return UpdateRespons(message = "No user found", status_code = 404)
+            raise HTTPException(status_code=404, detail="User not found")
 
 
     except Error as e:
