@@ -60,12 +60,17 @@ async def Add_User_Limit(request: addUserInfo) -> UpdateRespons:
     return addUserToDB(request.user_id, request.memory, request.vCpu)
 
 @app.delete("/quota/deleteUser/{user_id}", response_model=UpdateRespons)
-async def Delete_user(user_id, str) -> UpdateRespons:
+async def Delete_user(user_id: str) -> UpdateRespons:
     
     return deteleUserFromDB(user_id)
 
 
 def deteleUserFromDB(user_id: str) -> UpdateRespons:
+
+    """
+        Deletes a user from the database
+    
+    """
 
     try:
         connection = mysql.connector.connect(host=ownHostForWrite,
@@ -79,20 +84,25 @@ def deteleUserFromDB(user_id: str) -> UpdateRespons:
             mycursor.execute(sqlquery)
             resultFromquery = mycursor.fetchall()[0][0]
 
+
+            print(resultFromquery)
+
         if resultFromquery == 1:
-            sql = "DELETE FROM " + tableUse + " WHERE user_id = " + user_id
+            sql = "DELETE FROM " + tableUse + " WHERE user_id = " + "\"" +  user_id + "\""
+
+            print(sql)
 
             mycursor.execute(sql)
 
             connection.commit()
 
             if mycursor.rowcount == 1:
-                return UpdateRespons(message = "User " + user_id + " was delete", status_code=200 )
+                return UpdateRespons(message = "User " + user_id + " was delete", status_code = 200 )
             else:
-                return UpdateRespons(message = "Something went wrong, while deleting user " + user_id + " not delete", statusCode = 500)
+                return UpdateRespons(message = "Something went wrong, while deleting user " + user_id + " not delete", status_code = 500)
 
         else:
-            return UpdateRespons(message = "No user found", statusCode = 404)
+            return UpdateRespons(message = "No user found", status_code = 404)
 
 
     except Error as e:
