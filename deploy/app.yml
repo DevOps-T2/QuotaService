@@ -29,7 +29,6 @@ metadata:
   labels:
     app: quotas
 spec:
-  type: LoadBalancer # Remove later
   ports:
     - port: 80
   selector:
