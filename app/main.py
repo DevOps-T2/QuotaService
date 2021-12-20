@@ -1,6 +1,6 @@
 from typing import AsyncIterable
 from typing import List
-from fastapi import FastAPI, HTTPException, APIRouter
+from fastapi import FastAPI, HTTPException, APIRouter, Request
 from pydantic import BaseModel
 import mysql.connector
 from mysql.connector import Error
@@ -53,11 +53,16 @@ tableUse = 'quotas'
 
 @router.post("/quota/addUserLimit", response_model=UpdateRespons)
 @router.post("/quota/addUserLimit/", response_model=UpdateRespons, include_in_schema=False)
-async def Add_User_Limit(request: addUserInfo) -> UpdateRespons:
+async def Add_User_Limit(request: addUserInfo, req: Request) -> UpdateRespons:
     """
     Add a user limit for memory and Vcpu
 
     """
+    
+    role = req.headers.get("Role")
+
+    if(role != "admin"):
+        raise HTTPException(status_code=403, detail="Forbidden") 
 
     return addUserToDB(request.user_id, request.memory, request.vCpu)
 
