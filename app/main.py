@@ -53,13 +53,13 @@ tableUse = 'quotas'
 
 @router.post("/quota/addUserLimit", response_model=UpdateRespons)
 @router.post("/quota/addUserLimit/", response_model=UpdateRespons, include_in_schema=False)
-async def Add_User_Limit(request: addUserInfo) -> UpdateRespons:
+async def Add_User_Limit(request: addUserInfo, req: Request) -> UpdateRespons:
     """
     Add a user limit for memory and Vcpu
 
     """
     
-    role = request.headers.get("Role")
+    role = req.headers.get("Role")
 
     if(role != "admin"):
         raise HTTPException(status_code=403) 
@@ -68,8 +68,13 @@ async def Add_User_Limit(request: addUserInfo) -> UpdateRespons:
 
 @router.delete("/quota/deleteUser/{user_id}", response_model=UpdateRespons)
 @router.delete("/quota/deleteUser/{user_id}/", response_model=UpdateRespons, include_in_schema=False)
-async def Delete_user(user_id: str) -> UpdateRespons:
+async def Delete_user(user_id: str, req: Request) -> UpdateRespons:
     
+    role = req.headers.get("Role")
+
+    if(role != "admin"):
+        raise HTTPException(status_code=403) 
+
     return deteleUserFromDB(user_id)
 
 
@@ -160,11 +165,18 @@ def addUserToDB(user_id: str, memory: int, vCpu: int):
 # This function takes a userID and returns the memory and Vcpu limits for ths user
 @router.get("/quota/{user_id}", response_model=QuotasRespons)
 @router.get("/quota/{user_id}/", response_model=UpdateRespons, include_in_schema=False)
-async def Get_Quota_Request(user_id: str) -> QuotasRespons:
+async def Get_Quota_Request(user_id: str, req: Request) -> QuotasRespons:
     """
         Takes a user id and returns a JSON object with the limit for the user
 
     """    
+
+    role = req.headers.get("Role")
+    userId = req.headers.get("UserId")
+
+    if(role != "admin" and userId != user_id):
+        raise HTTPException(status_code=403) 
+
     memory: int
     vCpu: int
 
@@ -178,12 +190,17 @@ async def Get_Quota_Request(user_id: str) -> QuotasRespons:
 # Updates the memory limit for a specific user
 @router.put("/quota/memory/{user_id}", response_model=UpdateRespons)
 @router.put("/quota/memory/{user_id}/", response_model=UpdateRespons, include_in_schema=False)
-async def Update_Memory_Quota_Request(user_id: str, updateMemory: UpdateMemory):
+async def Update_Memory_Quota_Request(user_id: str, updateMemory: UpdateMemory, req: Request):
 
     """
         Takes a user id and updates the limit memory for specific user in the Quota Mysql database
         Returns a string saying "User memory was updated" if succed 
     """
+    
+    role = req.headers.get("Role")
+
+    if(role != "admin"):
+        raise HTTPException(status_code=403) 
 
     # Does a mysql database return a status code, when a write is succes???
     statusCode = writeToDB(user_id, "upMemory", updateMemory.memoryLimit)
@@ -196,12 +213,16 @@ async def Update_Memory_Quota_Request(user_id: str, updateMemory: UpdateMemory):
 # Updates the Vcpu limit for a specific user
 @router.put("/quota/Vcpu/{user_id}", response_model=UpdateRespons)
 @router.put("/quota/Vcpu/{user_id}/", response_model=UpdateRespons, include_in_schema=False)
-async def Update_VCpu_Quota_Request(user_id: str, vcpu: UpdateVcpu):
+async def Update_VCpu_Quota_Request(user_id: str, vcpu: UpdateVcpu, req: Request):
     
     """
         Takes a user id and updates the limit Vcpu for specific user in the Quota Mysql database
         Returns a string saying "User Vcpu was updated" if succed
     """
+    role = req.headers.get("Role")
+
+    if(role != "admin"):
+        raise HTTPException(status_code=403) 
 
     statusCode = writeToDB(user_id, "upVcpu", vcpu.vcpuLimit )
     
