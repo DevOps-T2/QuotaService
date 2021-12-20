@@ -1,6 +1,6 @@
 from typing import AsyncIterable
 from typing import List
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, APIRouter
 from pydantic import BaseModel
 import mysql.connector
 from mysql.connector import Error
@@ -8,6 +8,7 @@ from mysql.connector import Error
 
 
 app = FastAPI()
+router = APIRouter()
 
 class GetMemoryAndVcpu(BaseModel):
     id: int
@@ -50,7 +51,8 @@ ownUser = 'root'
 #ownPassword = ''
 tableUse = 'quotas'
 
-@app.post("/quota/addUserLimit", response_model=UpdateRespons)
+@router.post("/quota/addUserLimit", response_model=UpdateRespons)
+@router.post("/quota/addUserLimit/", response_model=UpdateRespons, include_in_schema=False)
 async def Add_User_Limit(request: addUserInfo) -> UpdateRespons:
     """
     Add a user limit for memory and Vcpu
@@ -59,7 +61,8 @@ async def Add_User_Limit(request: addUserInfo) -> UpdateRespons:
 
     return addUserToDB(request.user_id, request.memory, request.vCpu)
 
-@app.delete("/quota/deleteUser/{user_id}", response_model=UpdateRespons)
+@router.delete("/quota/deleteUser/{user_id}", response_model=UpdateRespons)
+@router.delete("/quota/deleteUser/{user_id}/", response_model=UpdateRespons, include_in_schema=False)
 async def Delete_user(user_id: str) -> UpdateRespons:
     
     return deteleUserFromDB(user_id)
@@ -150,7 +153,8 @@ def addUserToDB(user_id: str, memory: int, vCpu: int):
 
 
 # This function takes a userID and returns the memory and Vcpu limits for ths user
-@app.get("/quota/{user_id}", response_model=QuotasRespons)
+@router.get("/quota/{user_id}", response_model=QuotasRespons)
+@router.get("/quota/{user_id}/", response_model=UpdateRespons, include_in_schema=False)
 async def Get_Quota_Request(user_id: str) -> QuotasRespons:
     """
         Takes a user id and returns a JSON object with the limit for the user
@@ -167,7 +171,8 @@ async def Get_Quota_Request(user_id: str) -> QuotasRespons:
     return QuotasRespons(memory = memory, vCpu = vCpu)
     
 # Updates the memory limit for a specific user
-@app.put("/quota/memory/{user_id}", response_model=UpdateRespons)
+@router.put("/quota/memory/{user_id}", response_model=UpdateRespons)
+@router.put("/quota/memory/{user_id}/", response_model=UpdateRespons, include_in_schema=False)
 async def Update_Memory_Quota_Request(user_id: str, updateMemory: UpdateMemory):
 
     """
@@ -184,7 +189,8 @@ async def Update_Memory_Quota_Request(user_id: str, updateMemory: UpdateMemory):
     return  UpdateRespons(message = "Memory limit for user: " + user_id + " was updated", status_code = statusCode)
 
 # Updates the Vcpu limit for a specific user
-@app.put("/quota/Vcpu/{user_id}", response_model=UpdateRespons)
+@router.put("/quota/Vcpu/{user_id}", response_model=UpdateRespons)
+@router.put("/quota/Vcpu/{user_id}/", response_model=UpdateRespons, include_in_schema=False)
 async def Update_VCpu_Quota_Request(user_id: str, vcpu: UpdateVcpu):
     
     """
@@ -317,7 +323,8 @@ def readFromDB(user_id):
             print("MySQL connection is closed")
 
 
-@app.get("/viewDatabase", response_model = List[GetMemoryAndVcpu])
+@router.get("/viewDatabase", response_model = List[GetMemoryAndVcpu])
+@router.get("/viewDatabase/", response_model = List[GetMemoryAndVcpu], include_in_schema=False)
 async def ViewDatabase():
 
     query_result = readwholeDatabase()
@@ -332,6 +339,8 @@ async def ViewDatabase():
                              memoryLimit = result[2],
                              vcpuLimit = result[3]))
     return resultList
+
+
 
 def readwholeDatabase():
     try:
@@ -360,7 +369,7 @@ def readwholeDatabase():
             connection.close()
             print("MySQL connection is closed")
 
-@app.get("/")
+@router.get("/")
 def read_root():
 
     connection = None
@@ -385,4 +394,4 @@ def read_root():
            connection.close()
            print("MySQL connection is closed")
 
-    
+app.include_router(router)
