@@ -53,16 +53,16 @@ tableUse = 'quotas'
 
 @router.post("/quota/addUserLimit", response_model=UpdateRespons)
 @router.post("/quota/addUserLimit/", response_model=UpdateRespons, include_in_schema=False)
-async def Add_User_Limit(request: addUserInfo, req: Request) -> UpdateRespons:
+async def Add_User_Limit(request: addUserInfo) -> UpdateRespons:
     """
     Add a user limit for memory and Vcpu
 
     """
     
-    role = req.headers.get("Role")
+    role = request.headers.get("Role")
 
     if(role != "admin"):
-        raise HTTPException(status_code=403, detail="Forbidden") 
+        raise HTTPException(status_code=403) 
 
     return addUserToDB(request.user_id, request.memory, request.vCpu)
 
