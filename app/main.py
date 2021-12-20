@@ -110,12 +110,12 @@ def deteleUserFromDB(user_id: str) -> UpdateRespons:
             connection.commit()
 
             if mycursor.rowcount == 1:
-                return UpdateRespons(message = "User " + user_id + " was delete", status_code = 200 )
+                return UpdateRespons(message = "User " + user_id + " was deleted", status_code = 200 )
             else:
                 return UpdateRespons(message = "Something went wrong, while deleting user " + user_id + " not delete", status_code = 500)
 
         else:
-            raise HTTPException(status_code=404, detail="User not found")
+            return UpdateRespons(message = "User " + user_id + " was already deleted", status_code = 204 )
 
 
     except Error as e:
