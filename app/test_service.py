@@ -36,8 +36,8 @@ class TestOfQuoatasService(MockDBWithOutData):
 
 
 
-if __name__ == '__test_service.py__':
-    unittest.main
+#if __name__ == '__test_service.py__':
+ #   unittest.main
     
 
 
