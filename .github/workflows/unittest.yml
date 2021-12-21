@@ -33,9 +33,7 @@ jobs:
         sudo dpkg -i mysql-apt-config_0.8.14-1_all.deb
         sudo apt update
         sudo apt install mysql-server
-        sudo mysql_secure_installation
-        n
-        sudo systemctl start mysql
+        sudo service mysql start
        
         
     -  name: run unittest
