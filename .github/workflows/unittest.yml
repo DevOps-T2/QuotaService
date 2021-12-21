@@ -2,7 +2,9 @@ name: Python application build and test only
 
 on:
   push:
-    branches: [ build_only ]
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
  
 jobs:
   build:
@@ -22,12 +24,13 @@ jobs:
         pip install mysql.connector
         pip install mock
         
-     - name: Install mysql server
-       run: |
-        sudo apt update
-        sudo apt install mysql-server
+    - name: Install mysql server
+      run: |
+       sudo apt update
+       sudo apt install mysql-server
+       mysql
         
-     - name: run unittest
+    -  name: run unittest
        run: |
         # calling via python will also add the current directory to sys.path
         python -m unittest test_service.py
