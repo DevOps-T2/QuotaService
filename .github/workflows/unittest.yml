@@ -27,7 +27,11 @@ jobs:
     - name: Install mysql server
       run: |
        sudo apt update
+       sudo dpkg --configure -a
+       sudo apt-get install -f
+       sudo ee stack install
        sudo apt install mysql-server
+       
         
     -  name: run unittest
        run: |
