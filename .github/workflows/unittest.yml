@@ -23,11 +23,8 @@ jobs:
         pip install mysql
         pip install mysql.connector
         pip install mock
-        
-    - name: Install mysql server
-      run: |
-       sudo apt update
-       sudo apt install mysql-server
+        sudo apt update
+        sudo apt install mysql-server
        
         
     -  name: run unittest
