@@ -28,6 +28,11 @@ jobs:
         
     - name: Set up MySQL
       uses: mirromutth/mysql-action@v1.1
+      with:
+        mysql root password: ''
+        mysql user: 'developer'
+        mysql password: ''
+        
                
     -  name: run unittest
        run: |
