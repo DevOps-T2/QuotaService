@@ -33,7 +33,12 @@ jobs:
         mysql user: 'developer'
         mysql password: '123'
         mysql database: 'test_db'
-        
+    
+    - name: expend mysql packet file
+      run: |
+        sudo mysql 
+        set global max_allowed_packet=67108864;
+        exit
                
     -  name: run unittest
        run: |
