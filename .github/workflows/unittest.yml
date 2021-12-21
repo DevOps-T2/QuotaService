@@ -28,7 +28,6 @@ jobs:
       run: |
        sudo apt update
        sudo apt install mysql-server
-       mysql
         
     -  name: run unittest
        run: |
