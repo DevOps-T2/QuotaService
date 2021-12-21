@@ -4,6 +4,8 @@ from fastapi import FastAPI, HTTPException, APIRouter, Request
 from pydantic import BaseModel
 import mysql.connector
 from mysql.connector import Error
+import os
+
 # import json
 
 
@@ -44,11 +46,37 @@ class addUserInfo(BaseModel):
 #tableUse = 'quotasdatabase'
 
 # Database information for google cloud use:
-ownHostForWrite = 'quotas-mysql-0.quotas-headless'
-ownHostForRead = 'quotas-mysql-read'
-ownDatabase = 'Default'
-ownUser = 'root'
-#ownPassword = ''
+
+localConfigForRead = {
+    'host': 'localhost',
+    'database': 'default',
+    'user': 'root',
+   # 'password': ""
+}
+
+localConfigForWrite = {
+    'host': 'localhost',
+    'database': 'Default',
+    'user': 'root',
+   # 'password' : ''
+}
+
+
+configForRead = {
+    'host': 'quotas-mysql-read',
+    'database': 'Default',
+    'user': 'root',
+   # 'password': ""
+}
+
+
+configForWrite = {
+    'host': 'quotas-mysql-0.quotas-headless',
+    'database': 'Default',
+    'user': 'root',
+   # 'password' : ''
+}
+
 tableUse = 'quotas'
 
 @router.post("/quota/addUserLimit", response_model=UpdateRespons)
@@ -86,10 +114,7 @@ def deteleUserFromDB(user_id: str) -> UpdateRespons:
     """
 
     try:
-        connection = mysql.connector.connect(host=ownHostForWrite,
-                                         database=ownDatabase,
-                                         user=ownUser
-                                         )
+        connection = mysql.connector.connect(**configForWrite)
         if connection.is_connected():
             mycursor = connection.cursor()
             # Check to see if the userID exits in the database
@@ -133,10 +158,7 @@ def deteleUserFromDB(user_id: str) -> UpdateRespons:
 def addUserToDB(user_id: str, memory: int, vCpu: int):
 
     try:
-        connection = mysql.connector.connect(host=ownHostForWrite,
-                                         database=ownDatabase,
-                                         user=ownUser
-                                         )
+        connection = mysql.connector.connect(** configForWrite)
         if connection.is_connected():
             mycursor = connection.cursor()
             sql = "INSERT INTO " + tableUse + "(user_id, memory, vcpus) VALUES (%s, %s, %s)"
@@ -238,10 +260,7 @@ async def Update_VCpu_Quota_Request(user_id: str, vcpu: UpdateVcpu, req: Request
 
 def writeToDB(user_id: str, operation: str, item):
     try:
-        connection = mysql.connector.connect(host= ownHostForWrite,
-                                         database= ownDatabase,
-                                         user= ownUser
-                                         )
+        connection = mysql.connector.connect( ** configForWrite)
       
         if connection.is_connected():
             mycursor = connection.cursor()
@@ -306,10 +325,7 @@ def writeToDB(user_id: str, operation: str, item):
 def readFromDB(user_id):
 
     try:
-        connection = mysql.connector.connect(host= ownHostForRead,
-                                         database= ownDatabase,
-                                         user= ownUser
-                                         )
+        connection = mysql.connector.connect(** configForRead)
       
         if connection.is_connected():
             mycursor = connection.cursor()
@@ -370,10 +386,7 @@ async def ViewDatabase():
 
 def readwholeDatabase():
     try:
-        connection = mysql.connector.connect(host= ownHostForRead,
-                                         database= ownDatabase,
-                                         user= ownUser
-                                         )
+        connection = mysql.connector.connect(** configForRead)
       
         if connection.is_connected():
             mycursor = connection.cursor()
@@ -401,10 +414,7 @@ def read_root():
     connection = None
 
     try:
-        connection = mysql.connector.connect(host=ownHostForWrite,
-                                         database=ownDatabase,
-                                         user=ownUser
-                                         )
+        connection = mysql.connector.connect(** configForRead)
         if connection.is_connected():
             
             return "Succes connect to database!!!"
