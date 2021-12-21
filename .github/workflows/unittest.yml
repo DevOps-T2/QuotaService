@@ -32,6 +32,7 @@ jobs:
         mysql root password: ''
         mysql user: 'developer'
         mysql password: '123'
+        mysql database: 'test_db'
         
                
     -  name: run unittest
