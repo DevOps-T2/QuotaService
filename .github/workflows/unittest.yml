@@ -33,10 +33,11 @@ jobs:
         sudo dpkg -i mysql-apt-config_0.8.14-1_all.deb
         sudo apt update
         sudo apt install mysql-server
-        sudo service mysql start
-        mysql
-        ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';
-       
+        sudo service mysql stop
+        sudo mysqld_safe --skip-grant-tables
+        mysql -u root 
+        UPDATE mysql.user SET Password=PASSWORD('') WHERE User='root';
+        sudo mysql start
         
     -  name: run unittest
        run: |
