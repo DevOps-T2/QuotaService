@@ -26,19 +26,9 @@ jobs:
         pip install fastapi
         pip install pydantic
         
-        
-       
-        sudo apt update
-        wget https://dev.mysql.com/get/mysql-apt-config_0.8.14-1_all.deb
-        sudo dpkg -i mysql-apt-config_0.8.14-1_all.deb
-        sudo apt update
-        sudo apt install mysql-server
-        sudo service mysql stop
-        sudo mysqld_safe --skip-grant-tables
-        mysql -u root 
-        UPDATE mysql.user SET Password=PASSWORD('') WHERE User='root';
-        sudo mysql start
-        
+    - name: Set up MySQL
+      uses: mirromutth/mysql-action@v1.1
+               
     -  name: run unittest
        run: |
         # calling via python will also add the current directory to sys.path
