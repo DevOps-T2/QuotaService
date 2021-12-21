@@ -19,7 +19,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install unittest
+        pip install unittest2
         pip install mysql
         pip install mysql.connector
         pip install mock
