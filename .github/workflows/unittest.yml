@@ -23,6 +23,10 @@ jobs:
         pip install mysql
         pip install mysql.connector
         pip install mock
+        pip install fastapi
+        pip install pydantic
+        
+        
        
         sudo apt update
         wget https://dev.mysql.com/get/mysql-apt-config_0.8.14-1_all.deb
