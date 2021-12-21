@@ -35,4 +35,4 @@ jobs:
     -  name: run unittest
        run: |
         # calling via python will also add the current directory to sys.path
-        python -m unittest test_service.py
+        python -m unittest app/test_service.py
