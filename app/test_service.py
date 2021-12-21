@@ -1,7 +1,4 @@
-import time
 import unittest
-
-from starlette.responses import Response
 import main 
 from mock import patch
 from mockupdatabasewithoutdata import MockDBWithOutData
