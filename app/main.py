@@ -116,7 +116,7 @@ def deteleUserFromDB(user_id: str) -> UpdateRespons:
     try:
         connection = mysql.connector.connect(**configForWrite)
         if connection.is_connected():
-            connection.execute('set max_allowed_packet=67108864')
+            
             mycursor = connection.cursor()
             # Check to see if the userID exits in the database
             sqlquery = "SELECT COUNT(*) FROM " + tableUse + " WHERE User_id =" + "\"" +  user_id + "\""
