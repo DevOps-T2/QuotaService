@@ -34,6 +34,8 @@ jobs:
         sudo apt update
         sudo apt install mysql-server
         sudo service mysql start
+        mysql
+        ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';
        
         
     -  name: run unittest
