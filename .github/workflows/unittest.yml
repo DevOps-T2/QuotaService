@@ -25,6 +25,7 @@ jobs:
         pip install mock
         sudo apt update
         sudo apt install mysql-server
+        sudo systemctl start mysql
        
         
     -  name: run unittest
