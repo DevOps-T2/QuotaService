@@ -1,10 +1,4 @@
 name: Python application build and test only
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
  
 jobs:
   build:
