@@ -33,7 +33,7 @@ jobs:
      - name: Check out
        uses: actions/checkout@v2
      - name: run unitest
-       uses: ./ownAction@v1
+       uses: action/QuotaService/ownActions@v1
 
   setup-build-publish-deploy:
     name: Setup, Build, Publish, and Deploy
@@ -45,9 +45,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       
-      - name: unittest
-        uses: ./ownActions/
-
       # Setup gcloud CLI
       - uses: google-github-actions/setup-gcloud@v0.2.0
         with:
