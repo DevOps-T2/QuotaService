@@ -1,6 +1,7 @@
 name: Python application build and test only
  
-jobs:
+runs:
+  using: "composite"
   build:
     runs-on: ubuntu-latest
 
