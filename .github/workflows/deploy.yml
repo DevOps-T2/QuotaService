@@ -28,6 +28,7 @@ env:
 
 jobs:
   unitest:
+    name: Run unttest
     runs-on: ubuntu-latest
 
     steps:
@@ -56,12 +57,12 @@ jobs:
             max_connections=50
             local_infile=1
           root-password: ''
-                
-    -  name: run unittest
+
+      - name: run unittest
         run: |
-        # calling via python will also add the current directory to sys.path
-        cd app/
-        python -m unittest test_service.py
+          # calling via python will also add the current directory to sys.path
+          cd app/
+          python -m unittest test_service.py
 
   setup-build-publish-deploy:
     name: Setup, Build, Publish, and Deploy
