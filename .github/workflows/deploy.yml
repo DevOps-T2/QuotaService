@@ -24,14 +24,15 @@ env:
   DEPLOYMENT_NAME: quotas # TODO: update to deployment name
   IMAGE: quotas
 
-unitest:
+
+jobs:
+  unitest:
   runs-on: ubuntu-latest
 
   steps: 
    - name: run unitest
      uses: ./ownAction/
 
-jobs:
   setup-build-publish-deploy:
     name: Setup, Build, Publish, and Deploy
     runs-on: ubuntu-latest
