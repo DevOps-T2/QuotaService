@@ -1,5 +1,4 @@
-import unittest
-import main 
+import main
 from mock import patch
 from mockupdatabasewithoutdata import MockDBWithOutData
 
