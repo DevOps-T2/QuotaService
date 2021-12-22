@@ -27,11 +27,11 @@ env:
 
 jobs:
   unitest:
-  runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
-  steps: 
-   - name: run unitest
-     uses: ./ownAction/
+    steps: 
+     - name: run unitest
+       uses: ./ownAction/
 
   setup-build-publish-deploy:
     name: Setup, Build, Publish, and Deploy
