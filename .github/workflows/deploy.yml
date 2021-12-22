@@ -35,7 +35,8 @@ jobs:
         uses: actions/checkout@v2
       
       - name: unittest
-        uses: ./ownActions/unittest@latest
+        uses: actions/checkout@v2
+        uses: ./ownActions/unittest
 
       # Setup gcloud CLI
       - uses: google-github-actions/setup-gcloud@v0.2.0
