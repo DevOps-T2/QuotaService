@@ -28,7 +28,6 @@ env:
 
 jobs:
   unitest:
-    name: Run unitest
     runs-on: ubuntu-latest
 
     steps:
