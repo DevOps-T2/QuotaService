@@ -33,7 +33,7 @@ jobs:
      - name: Check out
        uses: actions/checkout@v2
      - name: run unitest
-       uses: ./ownActions/action
+       uses: ./ownActions/
 
   setup-build-publish-deploy:
     name: Setup, Build, Publish, and Deploy
