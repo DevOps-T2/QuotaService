@@ -98,6 +98,11 @@ async def Add_User_Limit(request: addUserInfo, req: Request) -> UpdateRespons:
 @router.delete("/quota/deleteUser/{user_id}/", response_model=UpdateRespons, include_in_schema=False)
 async def Delete_user(user_id: str, req: Request) -> UpdateRespons:
     
+    """
+    Deletes the given user form the database
+    
+    """
+    
     role = req.headers.get("Role")
 
     if(role != "admin"):
@@ -217,7 +222,7 @@ async def Update_Memory_Quota_Request(user_id: str, updateMemory: UpdateMemory, 
 
     """
         Takes a user id and updates the limit memory for specific user in the Quota Mysql database
-        Returns a string saying "User memory was updated" if succed 
+        Returns a string saying "User memory was updated" if succed + a status code 200 
     """
     
     role = req.headers.get("Role")
@@ -240,7 +245,7 @@ async def Update_VCpu_Quota_Request(user_id: str, vcpu: UpdateVcpu, req: Request
     
     """
         Takes a user id and updates the limit Vcpu for specific user in the Quota Mysql database
-        Returns a string saying "User Vcpu was updated" if succed
+        Returns a string saying "User Vcpu was updated" if succed + a status code 200
     """
     role = req.headers.get("Role")
 
@@ -254,10 +259,7 @@ async def Update_VCpu_Quota_Request(user_id: str, vcpu: UpdateVcpu, req: Request
 
     return UpdateRespons(message = "Vcpu limit for user: " + user_id + " was updated", status_code = statusCode)
 
- # Might deleth:   
-# This function is a event and NOT a endpoint
-#def CreatQuota(user_id, vcpu, memory):
-#   return
+
 
 def writeToDB(user_id: str, operation: str, item):
     try:
