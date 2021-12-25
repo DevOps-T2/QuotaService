@@ -20,9 +20,9 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
-  GKE_CLUSTER: dev # TODO: update to cluster name
-  GKE_ZONE: europe-west1-b # TODO: update to cluster zone
-  DEPLOYMENT_NAME: quotas # TODO: update to deployment name
+  GKE_CLUSTER: ${{ secrets.GKE_CLUSTER_NAME }}
+  GKE_ZONE: ${{ secrets.GKE_CLUSTER_ZONE }}
+  DEPLOYMENT_NAME: quotas
   IMAGE: quotas
 
 
